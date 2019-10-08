@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div style="text-align: center;top:10px; width:100%;font-size: 20px;position: absolute;"> HW1 <br>
+            <button id="toggle" style="width:10%">Toggle Turn</button>
+            <button id="change" style="width:10%">Quartz</button>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.js"></script>
+        <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        
+        <script>
+            
+            var renderer, scene, camera;
+            var mesh, circleClock;
+            var angle = -Math.PI/2; 
+            var turn = false;
+            var count = 0;
+            var change, num = 1;
+            var step, step1, step2;
+            
+            init();
+            animate(num);
+            
+            $('#change').click(function(){
+                if(num == 1) {
+                    num = 2;
+                }else if (num == 2){
+                    num = 3;
+                }else if(num == 3){
+                    num = 1;
+                }
+                $(this).text(function(i, v){
+                    if(v == "Quartz") return "Sector";
+                    else if(v == "Sector") return "Analog";
+                    else if(v == "Analog") return "Quartz"
+                });
+                if(num == 1) {
+                    mesh.visible = true;
+                    circleClock.visible = false;
+                    cancelAnimationFrame(step1);
+                    cancelAnimationFrame(step2);
+                    clearInterval(step);
+                    animate(num);
+                }
+                else if(num == 2) {
+                    mesh.visible = true;
+                    circleClock.visible = false;
+                    cancelAnimationFrame(step1);
+                    cancelAnimationFrame(step2);
+                    clearInterval(step);
+                    animate(num);
+                }else if(num == 3) {
+                    mesh.visible = false;
+                    circleClock.visible = true;
+                    cancelAnimationFrame(step1);
+                    cancelAnimationFrame(step2);
+                    clearInterval(step);
+                    animate(num);
+                }
+            });
+            
+            $('#toggle').click(function(){
+                turn = !turn;
+            });
+            function init () {
+                 
+                var width = window.innerWidth;
+                var height = window.innerHeight;
+                
+                renderer = new THREE.WebGLRenderer({
+                    alpha: true
+                });
+                document.body.appendChild (renderer.domElement);
+                renderer.setSize (width, height);
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera (35, width/height, 1, 100);
+                camera.position.y = 0;
+                camera.position.z = 40;
+                camera.lookAt (new THREE.Vector3(0,0,0));
+                window.addEventListener('resize', onWindowResize, false);
+                //real-time change width and height of window
+                ///////////////////////////////////////////////////////////////
+                var meshGeometry = new THREE.BoxGeometry (10, 0.5, 0.5);
+				var material = new THREE.MeshLambertMaterial();
+                mesh = new THREE.Mesh (meshGeometry, material);
+                scene.add (mesh);
+                
+				var geometry = new THREE.CircleBufferGeometry( 10, 50 );
+				var material = new THREE.MeshBasicMaterial( { color: 0xa3a3a3 } );
+				var circle = new THREE.Mesh( geometry, material );
+                scene.add( circle );
+                
+                var clock = new THREE.CircleGeometry( 10, 50 );
+                var cmaterial = new THREE.MeshBasicMaterial( { color: 0xc2c2c2 } );
+                circleClock = new THREE.Mesh( clock, cmaterial );
+                scene.add(circleClock);
+                circleClock.visible = false;
+            }
+            function onWindowResize() {
+                var width = window.innerWidth;
+                var height = window.innerHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+            }
+            function render() {
+                renderer.render(scene, camera);
+            }
+            function animate(num) {
+                if(num == 1){
+                    step1 = requestAnimationFrame(first_analog);
+                }
+                else if(num == 2){
+                    step = window.setInterval(second_quartz, 1000);
+                }
+                else if(num == 3){
+                    step2 = requestAnimationFrame(third_sector);
+                }
+            }
+            function first_analog(){
+                var second_around = Math.PI/30;
+                var minute_around = second_around/60;
+                if (turn) angle += minute_around;
+                mesh.position.set ( 8*Math.cos(-angle)*0.55, 8*Math.sin(-angle)*0.55, 0);
+                mesh.rotation.z = -angle;
+                step1 = requestAnimationFrame(first_analog);
+                render();
+            }
+            function second_quartz() {
+                var second_around = Math.PI*2/60;
+                if (turn) {
+                    var int_sec = parseInt(((angle - (-Math.PI/2))/second_around)+0.5);
+                    angle = (int_sec*second_around)+(-Math.PI/2);
+                    angle += second_around;
+                }
+                mesh.position.set ( 8*Math.cos(-angle)*0.55, 8*Math.sin(-angle)*0.55, 0);
+                mesh.rotation.z = -angle;
+                render();
+            }
+            function third_sector() {
+                var second_around = Math.PI/30;
+                var minute_around = second_around/60;
+                if (turn) {
+                    angle += minute_around;
+                }
+                scene.remove(circleClock);
+                circleClock = createMesh(new THREE.CircleGeometry(10, 50, Math.PI/2, (-angle-Math.PI/2)%(Math.PI*2)));
+                scene.add(circleClock);
+                step2 = requestAnimationFrame(third_sector);
+                render();
+            }
+            function createMesh(geometry) {
+                let cmaterial = new THREE.MeshBasicMaterial( { color: 0xc2c2c2, opacity: 0.5,transparent: true, side: THREE.DoubleSide} );
+                let circle = new THREE.Mesh(geometry, cmaterial);
+                return circle;
+            }
+        </script>
+    </body>
+</html>
