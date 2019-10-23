@@ -1,0 +1,164 @@
+<html>
+    <head>
+		<style>
+		#info {
+		  position: absolute;
+		  top: 10px;
+		  width: 100%;
+		  padding: 10px;
+		  text-align: center;
+		  color: #ffff00
+		}
+
+		body {
+		  overflow: hidden;
+		}
+		</style>
+    </head>
+	<body>
+		<div id="info"><p>hw2</p>
+		<br>
+		<button id="toggle" style="width:20%">shoot</button>
+		</div>
+		<script src="https://threejs.org/build/three.min.js"></script>
+		<script src="https://threejs.org/examples/js/controls/OrbitControls.js">
+		</script>	
+		<script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script>
+		 javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+           
+			var camera, scene, renderer, mesh, light;
+			var keyboard = new KeyboardState();
+			var turn, base;
+			var pos, vel, force;
+			var ball, clock;
+			var pos0, vel0;
+			var xSpeed = 0.5;
+			var m = 1;
+
+			init();
+			animate();
+
+			$("#toggle").click(function() {
+				pos.copy (pos0);
+				vel.copy (vel0);
+			});
+			$("#shoot").click(function() {
+                useOne = !useOne;
+            });
+
+			function init() {
+			  scene = new THREE.Scene();
+
+			  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+			  camera.position.z = 500;
+
+			  light = new THREE.PointLight(0xffffff);
+			  light.position.set(50, 50, 50);
+			  scene.add(light);
+			 
+			  var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
+			  scene.add(gridXZ);
+
+			  renderer = new THREE.WebGLRenderer();
+			  renderer.setSize(window.innerWidth, window.innerHeight);
+			  renderer.setClearColor(0x888888);
+
+			  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+			  
+
+			  document.body.appendChild(renderer.domElement);
+			  ///////////////////////////////////////////////////////////
+
+			  var geometry = new THREE.BoxGeometry(40, 10, 20);
+			  var material = new THREE.MeshLambertMaterial({color:0x549958});
+			  base = new THREE.Mesh(geometry, material);
+			  base.position.set(-10,5,0);
+			  scene.add(base);
+			  
+			  var geometry = new THREE.CylinderGeometry(10, 10 ,10 ,40 ,10);
+			  var material = new THREE.MeshLambertMaterial({color:0x549958});
+			  mesh = new THREE.Mesh(geometry, material);
+			  mesh.position.set(10,10,0);
+			  scene.add(mesh);
+			  
+			  var geometry = new THREE.CylinderGeometry(2, 2 ,10 ,40 ,10);
+			  var material = new THREE.MeshLambertMaterial({color:0x549958});
+			  mesh2 = new THREE.Mesh(geometry, material);
+			  mesh2.position.set(10,0,0);
+			  mesh2.rotation.x=Math.PI/2;
+			  scene.add(mesh2);
+			  
+			  var geometry = new THREE.CylinderGeometry(2, 2 ,10 ,40 ,10);
+			  var material = new THREE.MeshLambertMaterial({color:0x549958});
+			  mesh3 = new THREE.Mesh(geometry, material);
+			  mesh3.position.set(15,0,0);
+			  mesh3.rotation.z=Math.PI/2;
+			  scene.add(mesh3);
+			  
+			  base.add(mesh);
+			  mesh.add(mesh2);
+			  mesh.add(mesh3);
+			  
+			  ball = new THREE.Mesh (new THREE.SphereGeometry(2,10,10), new THREE.MeshNormalMaterial({color:0x929496}));
+			  scene.add (ball);
+			 
+			  clock = new THREE.Clock();
+				pos = new THREE.Vector3(20,15,0);
+				pos0 = pos.clone();
+			  vel = new THREE.Vector3(20,0,0);
+				vel0 = vel.clone();
+			  force = new THREE.Vector3(0,-10,0);
+			  
+			  window.addEventListener('resize', onWindowResize, true);
+			  
+
+			}
+
+			function onWindowResize() {
+			  camera.aspect = window.innerWidth / window.innerHeight;
+			  camera.updateProjectionMatrix();
+			  renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			function animate() {
+				keyboard.update();
+				var dt = clock.getDelta();
+				if (keyboard.pressed ('toggle')){
+					ball.rotation.y += 0.01;
+				}
+				else{
+					ball.rotation.y -= 0.01;
+				}
+					
+				if (keyboard.pressed ('W')) {
+					base.position.x += xSpeed;
+
+				}
+				if (keyboard.pressed ('S')) {
+					base.position.x -= xSpeed;
+				}
+		
+				
+
+				  vel.add ( force.clone().multiplyScalar(dt/m));
+				  pos.add ( vel.clone().multiplyScalar (dt));
+					
+				  if (pos.y < 0) {
+					vel.y *= -0.85;
+				  }
+
+					if (pos.x > 100) {
+					scene.remove (ball);
+				  }
+				  
+					ball.position.copy (pos);
+
+					requestAnimationFrame(animate);
+					renderer.render(scene, camera);
+				
+			}
+		</script>
+	</body>
+</html>
