@@ -26,9 +26,6 @@
 		<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 		<script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
 		<script src="https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders"></script>
-		<script type="text/javascript" src="libs/three.js"></script>
-		<script type="text/javascript" src="libs/OBJLoader.js"></script>
-		<script type="text/javascript"></script>
 
 		<script>
 		javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
@@ -72,7 +69,7 @@
 			material = new THREE.MeshBasicMaterial({
 				side: THREE.DoubleSide,
 				transparent: true, // key to cutout texture
-				map: loader.load('tree.png')
+				map: loader.load('https://github.com/a626543/computer-homework/blob/gh-pages/tree.png')
 			});
 
 			tree = new THREE.Mesh (new THREE.PlaneGeometry (40,40), material);
@@ -86,7 +83,7 @@
 			material = new THREE.MeshBasicMaterial({
 				side: THREE.DoubleSide,
 				transparent: true, // key to cutout texture
-				map: loader.load('tree.png')
+				map: loader.load('https://github.com/a626543/computer-homework/blob/gh-pages/tree.png')
 			});
 
 			tree = new THREE.Mesh (new THREE.PlaneGeometry (40,40), material);
@@ -99,12 +96,12 @@
 
 		var mtlLoader = new THREE.MTLLoader();
 		//mtlLoader.setPath('hw3/');
-		mtlLoader.load('car.mtl', function(materials) {
+		mtlLoader.load('https://github.com/a626543/computer-homework/blob/gh-pages/car.mtl', function(materials) {
 		  materials.preload();
 		  var objLoader = new THREE.OBJLoader();
 		  objLoader.setMaterials(materials);
 		  //objLoader.setPath('hw3/');
-		  objLoader.load('car.obj', function(object) {
+		  objLoader.load('https://github.com/a626543/computer-homework/blob/gh-pages/car.obj', function(object) {
 
 			var theObject =  unitize (object, 20);
 			scene.add (theObject);
@@ -142,8 +139,7 @@
 			orthoCam.updateProjectionMatrix();
 			renderer.setSize(window.innerWidth, window.innerHeight);
 		}
-		function animate() {
-		  var dt = clock.getDelta();
+		function animate() {;
 		  	keyboard.update();
 			if (keyboard.pressed("A")) {
 				angle += 0.01;
@@ -157,17 +153,6 @@
 			if (keyboard.pressed("S")) {
 				speed += 0.15;
 			}
-
-		  var x = 50 * Math.cos(angle);
-		  var z = 50 * Math.sin(angle);
-		  
-		  if (car !== undefined && turn) {
-			car.position.set(x, 0, z);
-			car.rotation.y = -(angle + Math.PI);
-			angle -= dt;
-		  }
-
-		  controls.update();
 
 		  requestAnimationFrame(animate);
 		  renderer.render(scene, camera);
