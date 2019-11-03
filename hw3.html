@@ -95,12 +95,12 @@
 		}
 
 		var mtlLoader = new THREE.MTLLoader();
-		mtlLoader.setPath('resources/');
+		//objLoader.setPath('resources/');
 		mtlLoader.load('car.mtl', function(materials) {
 		  materials.preload();
 		  var objLoader = new THREE.OBJLoader();
 		  objLoader.setMaterials(materials);
-		  objLoader.setPath('resources/');
+		  //objLoader.setPath('resources/');
 		  objLoader.load('car.obj', function(object) {
 
 			var theObject =  unitize (object, 20);
