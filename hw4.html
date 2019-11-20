@@ -273,7 +273,7 @@
                 materials.preload();
                 var objLoader = new THREE.OBJLoader();
                 objLoader.setMaterials(materials);
-                objLoader.setPath('Desklamp/');
+                //objLoader.setPath('Desklamp/');
                 objLoader.load('Desklamp.obj', function(object) {
                     theObjectAll = unitize (object, -22, 21, -10, 20);
                     theObjectAll.children[0].castShadow = true;
@@ -303,7 +303,7 @@
                 materials.preload();
                 var objLoader2 = new THREE.OBJLoader();
                 objLoader2.setMaterials(materials);
-                objLoader2.setPath('chair/');
+               // objLoader2.setPath('chair/');
                 objLoader2.load('chair.obj', function(object) {
                     theObjectChair = unitize (object, 10, -9.5, 40, 30);
 					theObjectChair.children[0].position.set(0,10,30);
