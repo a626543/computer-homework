@@ -9,18 +9,15 @@
   text-align: center;
   color: #ffff00
 }
-
 body {
   overflow: hidden;
 }
 </style>
 </head>
-
 <body> 
 <div id="info">
   hw5-3 Basic GLSL <br>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/109/three.min.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -29,10 +26,8 @@ body {
 <script id="myVertexShader" type="x-shader/x-vertex">
     uniform vec3 lightpos;  // world coordinate
     varying vec3 eyelightdir;
-    varying vec3 eyenormal;
-    
+    varying vec3 eyenormal;  
     varying vec4 eyepos;
-    
     void main() {
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         eyepos = modelViewMatrix * vec4 (position, 1.0);
@@ -89,7 +84,6 @@ function remove(name) {
     scene.remove(o);
     console.log("delete" + name);
 }
-    
 class CTeapot {
     constructor(mesh) {//, pos, name
         this.alive = 1;
@@ -133,15 +127,11 @@ function init() {
   renderer.setSize(width, height);
   renderer.setClearColor(0x888888);
   document.body.appendChild(renderer.domElement);
-
   scene = new THREE.Scene();
-
   camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
   camera.position.z = 200;
   camera.lookAt(new THREE.Vector3(0, 0, 0));
-
   controls = new THREE.OrbitControls(camera, renderer.domElement);
-
   var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
   //scene.add(gridXZ);
    var pointLight = new THREE.PointLight(0xffffff);
@@ -158,12 +148,9 @@ function init() {
   scene.add(plane);
   plane.position.y -= 10;
   plane.rotation.x = -Math.PI / 2;
-
   let platform = new THREE.Mesh (new THREE.BoxGeometry (10,10,10), new THREE.MeshNormalMaterial());
   //scene.add (platform);
-	
   pickables = [plane, platform];
-  
   raycaster = new THREE.Raycaster();
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 }
@@ -211,8 +198,6 @@ function onDocumentMouseDown(event) {
             intersects[0].point.y += 10;
             tea_pot_mono.position.copy(intersects[0].point);
             console.log(tea_pot_mono.position);
-            
-            
             teapots.push(new CTeapot(tea_pot_mono.clone()));
             
             console.log("here:"+teapot_num);
@@ -224,7 +209,6 @@ function onDocumentMouseDown(event) {
     
 }
 function animate() {
-
   let dt_teapot = clock_teapot.getDelta();
   teapots.forEach (function (b) {b.update (dt_teapot)});
   requestAnimationFrame(animate);
